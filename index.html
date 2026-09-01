@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RelicReady AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #121212;
+      color: #f5f1e8;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 25px 20px;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: #d8a84e;
+    }
+
+    .badge {
+      background: #242424;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #d8a84e;
+    }
+
+    main {
+      max-width: 850px;
+      margin: auto;
+      padding: 35px 20px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .hero h1 {
+      font-size: 38px;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      color: #aaa;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    .upload-box {
+      border: 2px dashed #555;
+      border-radius: 20px;
+      padding: 50px 20px;
+      text-align: center;
+      background: #1b1b1b;
+      margin-bottom: 30px;
+      cursor: pointer;
+    }
+
+    .upload-box:hover {
+      border-color: #d8a84e;
+    }
+
+    .upload-icon {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .upload-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 14px 25px;
+      background: #d8a84e;
+      color: #121212;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    .feature-card {
+      background: #1b1b1b;
+      padding: 22px;
+      border-radius: 15px;
+      border: 1px solid #2d2d2d;
+    }
+
+    .feature-card h3 {
+      margin-bottom: 10px;
+      color: #d8a84e;
+    }
+
+    .feature-card p {
+      color: #aaa;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    #preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    #preview img {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid #444;
+    }
+
+    .start-button {
+      display: none;
+      width: 100%;
+      margin-top: 25px;
+      padding: 18px;
+      border: none;
+      border-radius: 12px;
+      background: #d8a84e;
+      color: #111;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Relic<span>Ready</span></div>
+  <div class="badge">PERSONAL BETA</div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <h1>Photograph it. Identify it. List it.</h1>
+    <p>
+      Upload photos of an antique, vintage item, collectible, or piece of furniture.
+      RelicReady will help you enhance the photos, research the item,
+      estimate its value, and create your listing.
+    </p>
+  </section>
+
+  <label class="upload-box" for="photoUpload">
+
+    <div class="upload-icon">📸</div>
+
+    <h2>Upload Your Item Photos</h2>
+
+    <p style="color:#888; margin-top:10px;">
+      Add multiple photos, labels, signatures, maker marks, and detail shots.
+    </p>
+
+    <span class="upload-button">
+      Choose Photos
+    </span>
+
+  </label>
+
+  <input
+    type="file"
+    id="photoUpload"
+    multiple
+    accept="image/*"
+  >
+
+  <div id="preview"></div>
+
+  <button class="start-button" id="startButton">
+    ✨ START RELICREADY ANALYSIS
+  </button>
+
+
+  <section class="features">
+
+    <div class="feature-card">
+      <h3>✨ Enhance</h3>
+      <p>
+        Improve lighting, color, brightness, contrast, clarity,
+        and overall product photo quality.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <h3>🔎 Research</h3>
+      <p>
+        Analyze your item, maker marks, style, materials,
+        estimated age, and comparable listings.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <h3>💰 Value</h3>
+      <p>
+        Get estimated quick-sale, fair-market,
+        and optimistic resale pricing.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <h3>✍️ List</h3>
+      <p>
+        Generate optimized listing titles and descriptions
+        for Facebook Marketplace, eBay, Etsy, and more.
+      </p>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  RelicReady AI • Built for treasure hunters, antique addicts & professional flippers.
+</footer>
+
+
+<script>
+
+const photoUpload = document.getElementById("photoUpload");
+const preview = document.getElementById("preview");
+const startButton = document.getElementById("startButton");
+
+photoUpload.addEventListener("change", function() {
+
+  preview.innerHTML = "";
+
+  const files = Array.from(photoUpload.files);
+
+  files.forEach(file => {
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+
+      const img = document.createElement("img");
+
+      img.src = event.target.result;
+
+      preview.appendChild(img);
+
+    };
+
+    reader.readAsDataURL(file);
+
+  });
+
+  if (files.length > 0) {
+
+    startButton.style.display = "block";
+
+  }
+
+});
+
+
+startButton.addEventListener("click", function() {
+
+  alert(
+    "RelicReady Analysis is coming next! 🚀\n\nNext we will build the photo enhancement, research, valuation and listing tools."
+  );
+
+});
+
+</script>
+
+</body>
+</html>
