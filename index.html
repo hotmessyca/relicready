@@ -1,302 +1,864 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RelicReady AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RelicReady AI — Photo Studio</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #121212;
-      color: #f5f1e8;
-      min-height: 100vh;
-    }
+:root {
+  --bg: #101010;
+  --panel: #1a1a1a;
+  --panel2: #222;
+  --border: #333;
+  --text: #f5f0e7;
+  --muted: #999;
+  --gold: #d8a84e;
+}
 
-    header {
-      padding: 25px 20px;
-      border-bottom: 1px solid #333;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
 
-    .logo {
-      font-size: 28px;
-      font-weight: bold;
-      letter-spacing: -1px;
-    }
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 18px 20px;
+  position: sticky;
+  top: 0;
+  background: rgba(16,16,16,.96);
+  z-index: 20;
+}
 
-    .logo span {
-      color: #d8a84e;
-    }
+.header-inner {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-    .badge {
-      background: #242424;
-      padding: 8px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      color: #d8a84e;
-    }
+.logo {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
 
-    main {
-      max-width: 850px;
-      margin: auto;
-      padding: 35px 20px;
-    }
+.logo span {
+  color: var(--gold);
+}
 
-    .hero {
-      text-align: center;
-      margin-bottom: 40px;
-    }
+.beta {
+  color: var(--gold);
+  border: 1px solid #665027;
+  border-radius: 20px;
+  padding: 6px 10px;
+  font-size: 10px;
+  font-weight: bold;
+}
 
-    .hero h1 {
-      font-size: 38px;
-      margin-bottom: 15px;
-    }
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 28px 18px 60px;
+}
 
-    .hero p {
-      color: #aaa;
-      line-height: 1.6;
-      font-size: 16px;
-    }
+.hero {
+  margin-bottom: 25px;
+}
 
-    .upload-box {
-      border: 2px dashed #555;
-      border-radius: 20px;
-      padding: 50px 20px;
-      text-align: center;
-      background: #1b1b1b;
-      margin-bottom: 30px;
-      cursor: pointer;
-    }
+.hero h1 {
+  font-size: clamp(28px, 6vw, 44px);
+  margin-bottom: 8px;
+}
 
-    .upload-box:hover {
-      border-color: #d8a84e;
-    }
+.hero p {
+  color: var(--muted);
+  line-height: 1.5;
+}
 
-    .upload-icon {
-      font-size: 50px;
-      margin-bottom: 15px;
-    }
+.stepbar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 18px;
+  margin-bottom: 15px;
+}
 
-    input[type="file"] {
-      display: none;
-    }
+.step {
+  white-space: nowrap;
+  padding: 9px 13px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: #888;
+  font-size: 12px;
+}
 
-    .upload-button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 14px 25px;
-      background: #d8a84e;
-      color: #121212;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.step.active {
+  color: var(--gold);
+  border-color: #80652e;
+}
 
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-      margin-top: 30px;
-    }
+.upload-area {
+  border: 2px dashed #555;
+  border-radius: 18px;
+  padding: 42px 20px;
+  text-align: center;
+  background: var(--panel);
+  cursor: pointer;
+  transition: .2s;
+}
 
-    .feature-card {
-      background: #1b1b1b;
-      padding: 22px;
-      border-radius: 15px;
-      border: 1px solid #2d2d2d;
-    }
+.upload-area:hover,
+.upload-area.drag {
+  border-color: var(--gold);
+  background: #201d17;
+}
 
-    .feature-card h3 {
-      margin-bottom: 10px;
-      color: #d8a84e;
-    }
+.upload-icon {
+  font-size: 46px;
+  margin-bottom: 10px;
+}
 
-    .feature-card p {
-      color: #aaa;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+.upload-area h2 {
+  margin-bottom: 8px;
+}
 
-    #preview {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 15px;
-      margin-top: 25px;
-    }
+.upload-area p {
+  color: var(--muted);
+  font-size: 14px;
+}
 
-    #preview img {
-      width: 100%;
-      border-radius: 12px;
-      border: 1px solid #444;
-    }
+input[type="file"] {
+  display: none;
+}
 
-    .start-button {
-      display: none;
-      width: 100%;
-      margin-top: 25px;
-      padding: 18px;
-      border: none;
-      border-radius: 12px;
-      background: #d8a84e;
-      color: #111;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.gold-button {
+  display: inline-block;
+  margin-top: 18px;
+  background: var(--gold);
+  color: #111;
+  border: 0;
+  padding: 13px 20px;
+  border-radius: 9px;
+  font-weight: 800;
+  cursor: pointer;
+}
 
-    footer {
-      text-align: center;
-      padding: 40px 20px;
-      color: #666;
-      font-size: 13px;
-    }
-  </style>
+.photo-strip {
+  display: none;
+  gap: 10px;
+  overflow-x: auto;
+  margin: 18px 0;
+  padding-bottom: 5px;
+}
+
+.thumb {
+  width: 85px;
+  height: 85px;
+  flex: 0 0 85px;
+  object-fit: cover;
+  border-radius: 9px;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.thumb.selected {
+  border-color: var(--gold);
+}
+
+.studio {
+  display: none;
+}
+
+.studio-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.preview-panel,
+.controls-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.preview-panel h2,
+.controls-panel h2 {
+  font-size: 18px;
+  margin-bottom: 14px;
+}
+
+.canvas-wrap {
+  background:
+    linear-gradient(45deg,#252525 25%,transparent 25%),
+    linear-gradient(-45deg,#252525 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#252525 75%),
+    linear-gradient(-45deg,transparent 75%,#252525 75%);
+  background-size: 20px 20px;
+  background-position: 0 0,0 10px,10px -10px,-10px 0;
+  border-radius: 12px;
+  padding: 10px;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+canvas {
+  max-width: 100%;
+  max-height: 65vh;
+  width: auto;
+  height: auto;
+  display: block;
+  border-radius: 5px;
+}
+
+.mode-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.mode {
+  padding: 11px;
+  border-radius: 8px;
+  background: #252525;
+  border: 1px solid var(--border);
+  color: #aaa;
+  cursor: pointer;
+}
+
+.mode.active {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.control {
+  margin: 17px 0;
+}
+
+.control-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+  font-size: 13px;
+}
+
+.control-value {
+  color: var(--gold);
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--gold);
+}
+
+.action-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 20px;
+}
+
+.action {
+  padding: 13px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: #252525;
+  color: #eee;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.action.primary {
+  background: var(--gold);
+  color: #111;
+  border-color: var(--gold);
+}
+
+.next-section {
+  display: none;
+  margin-top: 20px;
+}
+
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 10px;
+}
+
+.pipeline-card {
+  padding: 16px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  text-align: center;
+  cursor: pointer;
+}
+
+.pipeline-card .icon {
+  font-size: 27px;
+  margin-bottom: 7px;
+}
+
+.pipeline-card h3 {
+  font-size: 13px;
+}
+
+.pipeline-card p {
+  color: #777;
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+.status {
+  display: none;
+  margin-top: 15px;
+  padding: 13px;
+  border-radius: 10px;
+  background: #1d291d;
+  border: 1px solid #355535;
+  color: #a9d5a9;
+  font-size: 13px;
+}
+
+footer {
+  text-align: center;
+  color: #555;
+  padding: 25px;
+  font-size: 12px;
+}
+
+@media (min-width: 800px) {
+  .studio-grid {
+    grid-template-columns: 1.35fr .65fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .pipeline {
+    grid-template-columns: 1fr;
+  }
+
+  .action-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
 </head>
 
 <body>
 
 <header>
-  <div class="logo">Relic<span>Ready</span></div>
-  <div class="badge">PERSONAL BETA</div>
+  <div class="header-inner">
+    <div class="logo">Relic<span>Ready</span></div>
+    <div class="beta">PERSONAL BETA</div>
+  </div>
 </header>
 
 <main>
 
-  <section class="hero">
-    <h1>Photograph it. Identify it. List it.</h1>
-    <p>
-      Upload photos of an antique, vintage item, collectible, or piece of furniture.
-      RelicReady will help you enhance the photos, research the item,
-      estimate its value, and create your listing.
-    </p>
-  </section>
+<section class="hero">
+  <h1>Turn raw photos into listings.</h1>
+  <p>
+    Enhance your product photography first. Research, valuation and listing generation
+    are the next steps in your RelicReady workflow.
+  </p>
+</section>
 
-  <label class="upload-box" for="photoUpload">
+<div class="stepbar">
+  <div class="step active">01 • Photos</div>
+  <div class="step">02 • Enhance</div>
+  <div class="step">03 • Stage</div>
+  <div class="step">04 • Research</div>
+  <div class="step">05 • Value</div>
+  <div class="step">06 • List</div>
+</div>
 
-    <div class="upload-icon">📸</div>
+<label class="upload-area" id="uploadArea" for="photoUpload">
+  <div class="upload-icon">📸</div>
+  <h2>Upload your item photos</h2>
+  <p>
+    Use multiple angles, maker marks, labels, signatures and condition details.
+  </p>
+  <span class="gold-button">Choose Photos</span>
+</label>
 
-    <h2>Upload Your Item Photos</h2>
+<input id="photoUpload" type="file" accept="image/*" multiple>
 
-    <p style="color:#888; margin-top:10px;">
-      Add multiple photos, labels, signatures, maker marks, and detail shots.
-    </p>
+<div class="photo-strip" id="photoStrip"></div>
 
-    <span class="upload-button">
-      Choose Photos
-    </span>
+<section class="studio" id="studio">
 
-  </label>
+  <div class="studio-grid">
 
-  <input
-    type="file"
-    id="photoUpload"
-    multiple
-    accept="image/*"
-  >
+<div class="preview-panel">
+  <h2>📷 Photo Preview</h2>
 
-  <div id="preview"></div>
+  <div class="canvas-wrap">
+    <canvas id="canvas"></canvas>
+  </div>
+</div>
 
-  <button class="start-button" id="startButton">
-    ✨ START RELICREADY ANALYSIS
-  </button>
+<div class="controls-panel">
 
+  <h2>✨ Photo Studio</h2>
 
-  <section class="features">
+  <div class="mode-buttons">
+    <button class="mode active" data-mode="catalog">
+      📦 Catalog
+    </button>
 
-    <div class="feature-card">
-      <h3>✨ Enhance</h3>
-      <p>
-        Improve lighting, color, brightness, contrast, clarity,
-        and overall product photo quality.
-      </p>
+    <button class="mode" data-mode="styled">
+      🏛️ Styled
+    </button>
+  </div>
+
+  <div class="control">
+    <div class="control-top">
+      <span>Brightness</span>
+      <span class="control-value" id="brightnessValue">0</span>
     </div>
+    <input id="brightness" type="range" min="-100" max="100" value="0">
+  </div>
 
-    <div class="feature-card">
-      <h3>🔎 Research</h3>
-      <p>
-        Analyze your item, maker marks, style, materials,
-        estimated age, and comparable listings.
-      </p>
+  <div class="control">
+    <div class="control-top">
+      <span>Contrast</span>
+      <span class="control-value" id="contrastValue">0</span>
     </div>
+    <input id="contrast" type="range" min="-100" max="100" value="0">
+  </div>
 
-    <div class="feature-card">
-      <h3>💰 Value</h3>
-      <p>
-        Get estimated quick-sale, fair-market,
-        and optimistic resale pricing.
-      </p>
+  <div class="control">
+    <div class="control-top">
+      <span>Saturation</span>
+      <span class="control-value" id="saturationValue">0</span>
     </div>
+    <input id="saturation" type="range" min="-100" max="100" value="0">
+  </div>
 
-    <div class="feature-card">
-      <h3>✍️ List</h3>
-      <p>
-        Generate optimized listing titles and descriptions
-        for Facebook Marketplace, eBay, Etsy, and more.
-      </p>
+  <div class="control">
+    <div class="control-top">
+      <span>Warmth</span>
+      <span class="control-value" id="warmthValue">0</span>
     </div>
+    <input id="warmth" type="range" min="-100" max="100" value="0">
+  </div>
 
-  </section>
+  <div class="control">
+    <div class="control-top">
+      <span>Clarity</span>
+      <span class="control-value" id="clarityValue">0</span>
+    </div>
+    <input id="clarity" type="range" min="0" max="100" value="0">
+  </div>
+
+  <div class="action-row">
+    <button class="action primary" id="autoButton">
+      ✨ AUTO ENHANCE
+    </button>
+
+    <button class="action" id="resetButton">
+      ↺ RESET
+    </button>
+
+    <button class="action primary" id="downloadButton">
+      ⬇️ SAVE PHOTO
+    </button>
+
+    <button class="action" id="compareButton">
+      👁️ HOLD TO COMPARE
+    </button>
+  </div>
+
+</div>
+
+  </div>
+
+  <div class="next-section" id="nextSection">
+
+<div class="status" id="status">
+  Photo enhanced successfully.
+</div>
+
+<div style="margin:25px 0 12px;">
+  <h2>What's next?</h2>
+  <p style="color:#777;margin-top:5px;font-size:13px;">
+    These modules are the next pieces we're adding to RelicReady.
+  </p>
+</div>
+
+<div class="pipeline">
+
+  <div class="pipeline-card">
+    <div class="icon">🖼️</div>
+    <h3>Background Studio</h3>
+    <p>Remove clutter and create professional backgrounds.</p>
+  </div>
+
+  <div class="pipeline-card">
+    <div class="icon">🔎</div>
+    <h3>AI Research</h3>
+    <p>Identify the maker, era, style and comparable items.</p>
+  </div>
+
+  <div class="pipeline-card">
+    <div class="icon">💰</div>
+    <h3>Valuation</h3>
+    <p>Estimate resale value and recommended listing price.</p>
+  </div>
+
+</div>
+
+  </div>
+
+</section>
 
 </main>
 
 <footer>
-  RelicReady AI • Built for treasure hunters, antique addicts & professional flippers.
+  RelicReady AI • Your personal antique & vintage selling studio.
 </footer>
-
 
 <script>
 
 const photoUpload = document.getElementById("photoUpload");
-const preview = document.getElementById("preview");
-const startButton = document.getElementById("startButton");
+const uploadArea = document.getElementById("uploadArea");
+const photoStrip = document.getElementById("photoStrip");
+const studio = document.getElementById("studio");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-photoUpload.addEventListener("change", function() {
+let originalImage = null;
+let images = [];
+let selectedIndex = 0;
 
-  preview.innerHTML = "";
+let settings = {
+  brightness: 0,
+  contrast: 0,
+  saturation: 0,
+  warmth: 0,
+  clarity: 0
+};
 
-  const files = Array.from(photoUpload.files);
+const controls = [
+  "brightness",
+  "contrast",
+  "saturation",
+  "warmth",
+  "clarity"
+];
 
-  files.forEach(file => {
+function loadFiles(files) {
+
+  images = [];
+  photoStrip.innerHTML = "";
+
+  Array.from(files).forEach((file, index) => {
 
     const reader = new FileReader();
 
     reader.onload = function(event) {
 
-      const img = document.createElement("img");
+      const img = new Image();
+
+      img.onload = function() {
+
+        images.push(img);
+
+        const thumb = document.createElement("img");
+
+        thumb.src = img.src;
+        thumb.className = "thumb";
+
+        thumb.onclick = function() {
+          selectedIndex = index;
+          selectImage(index);
+        };
+
+        photoStrip.appendChild(thumb);
+
+        if (images.length === 1) {
+          selectedIndex = 0;
+          selectImage(0);
+        }
+
+        photoStrip.style.display = "flex";
+        studio.style.display = "block";
+
+      };
 
       img.src = event.target.result;
-
-      preview.appendChild(img);
 
     };
 
     reader.readAsDataURL(file);
 
   });
+}
 
-  if (files.length > 0) {
+function selectImage(index) {
 
-    startButton.style.display = "block";
+  if (!images[index]) return;
 
+  selectedIndex = index;
+  originalImage = images[index];
+
+  document.querySelectorAll(".thumb").forEach((thumb, i) => {
+    thumb.classList.toggle("selected", i === index);
+  });
+
+  resetSettings(false);
+  drawImage();
+}
+
+function resetSettings(redraw = true) {
+
+  settings = {
+    brightness: 0,
+    contrast: 0,
+    saturation: 0,
+    warmth: 0,
+    clarity: 0
+  };
+
+  controls.forEach(name => {
+
+    document.getElementById(name).value = 0;
+    document.getElementById(name + "Value").textContent = "0";
+
+  });
+
+  if (redraw) drawImage();
+}
+
+function drawImage() {
+
+  if (!originalImage) return;
+
+  const maxWidth = 1600;
+  const scale = Math.min(1, maxWidth / originalImage.width);
+
+  canvas.width = Math.round(originalImage.width * scale);
+  canvas.height = Math.round(originalImage.height * scale);
+
+  const filter = `
+    brightness(${100 + settings.brightness}%)
+    contrast(${100 + settings.contrast}%)
+    saturate(${100 + settings.saturation}%)
+  `;
+
+  ctx.filter = filter;
+
+  ctx.drawImage(
+    originalImage,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  ctx.filter = "none";
+
+  if (settings.warmth !== 0) {
+    ctx.globalAlpha = Math.abs(settings.warmth) / 100 * .16;
+    ctx.fillStyle =
+      settings.warmth > 0
+      ? "rgba(255,170,70,1)"
+      : "rgba(80,150,255,1)";
+
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.globalAlpha = 1;
   }
+
+  if (settings.clarity > 0) {
+
+    ctx.globalAlpha = settings.clarity / 100 * .12;
+
+    ctx.globalCompositeOperation = "overlay";
+
+    ctx.drawImage(
+      originalImage,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha = 1;
+  }
+}
+
+controls.forEach(name => {
+
+  const slider = document.getElementById(name);
+  const value = document.getElementById(name + "Value");
+
+  slider.addEventListener("input", function() {
+
+    settings[name] = Number(slider.value);
+    value.textContent = slider.value;
+
+    drawImage();
+
+  });
 
 });
 
+document.getElementById("autoButton").onclick = function() {
 
-startButton.addEventListener("click", function() {
+  settings = {
+    brightness: 10,
+    contrast: 8,
+    saturation: 5,
+    warmth: 3,
+    clarity: 18
+  };
 
-  alert(
-    "RelicReady Analysis is coming next! 🚀\n\nNext we will build the photo enhancement, research, valuation and listing tools."
+  controls.forEach(name => {
+    document.getElementById(name).value = settings[name];
+    document.getElementById(name + "Value").textContent = settings[name];
+  });
+
+  drawImage();
+
+  document.getElementById("nextSection").style.display = "block";
+
+  document.getElementById("status").style.display = "block";
+
+  document.getElementById("status").textContent =
+    "✨ Auto enhancement applied. Your original photo remains unchanged.";
+
+};
+
+document.getElementById("resetButton").onclick = function() {
+  resetSettings(true);
+};
+
+document.getElementById("downloadButton").onclick = function() {
+
+  if (!originalImage) return;
+
+  const link = document.createElement("a");
+
+  link.download = "relicready-enhanced.jpg";
+
+  link.href = canvas.toDataURL("image/jpeg", .94);
+
+  link.click();
+
+};
+
+const compareButton = document.getElementById("compareButton");
+
+compareButton.addEventListener("mousedown", showOriginal);
+compareButton.addEventListener("touchstart", showOriginal);
+
+compareButton.addEventListener("mouseup", showEdited);
+compareButton.addEventListener("mouseleave", showEdited);
+compareButton.addEventListener("touchend", showEdited);
+
+function showOriginal() {
+
+  if (!originalImage) return;
+
+  ctx.filter = "none";
+
+  ctx.drawImage(
+    originalImage,
+    0,
+    0,
+    canvas.width,
+    canvas.height
   );
+
+}
+
+function showEdited() {
+  drawImage();
+}
+
+document.querySelectorAll(".mode").forEach(button => {
+
+  button.addEventListener("click", function() {
+
+    document.querySelectorAll(".mode").forEach(b =>
+      b.classList.remove("active")
+    );
+
+    button.classList.add("active");
+
+    if (button.dataset.mode === "catalog") {
+
+      settings.brightness = 10;
+      settings.contrast = 8;
+      settings.saturation = 5;
+      settings.warmth = 2;
+      settings.clarity = 15;
+
+    } else {
+
+      settings.brightness = 8;
+      settings.contrast = 12;
+      settings.saturation = 12;
+      settings.warmth = 10;
+      settings.clarity = 25;
+
+    }
+
+    controls.forEach(name => {
+      document.getElementById(name).value = settings[name];
+      document.getElementById(name + "Value").textContent = settings[name];
+    });
+
+    drawImage();
+
+  });
+
+});
+
+photoUpload.addEventListener("change", function() {
+  if (photoUpload.files.length) {
+    loadFiles(photoUpload.files);
+  }
+});
+
+uploadArea.addEventListener("dragover", function(event) {
+  event.preventDefault();
+  uploadArea.classList.add("drag");
+});
+
+uploadArea.addEventListener("dragleave", function() {
+  uploadArea.classList.remove("drag");
+});
+
+uploadArea.addEventListener("drop", function(event) {
+
+  event.preventDefault();
+
+  uploadArea.classList.remove("drag");
+
+  if (event.dataTransfer.files.length) {
+    loadFiles(event.dataTransfer.files);
+  }
 
 });
 
